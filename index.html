@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f6f1e7">
+<title>冰箱有什麼</title>
+<style>
+:root{
+  --bg:#f6f1e7; --card:#fffdf8; --text:#2b2620; --muted:#7a7166; --line:#e6ddcd;
+  --accent:#c8553d; --ok:#3d8b5a; --warn:#c77d12; --gone:#9a948b;
+  --ok-bg:rgba(61,139,90,.13); --warn-bg:rgba(199,125,18,.15); --gone-bg:rgba(154,148,139,.18); --danger-bg:rgba(200,85,61,.12);
+  --c-fridge:#3b7dd8; --c-freezer:#8a6fd1; --c-fridgeSauce:#2f9e9e; --c-roomSauce:#c27b2f; --c-pantry:#a08660;
+  --shadow:0 1px 3px rgba(0,0,0,.07);
+}
+@media (prefers-color-scheme: dark){
+  :root{--bg:#1c1a17;--card:#27241f;--text:#ece6dc;--muted:#a59c90;--line:#3a352f;--accent:#e0705a;--shadow:none;}
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;font-size:16px;line-height:1.5;-webkit-text-size-adjust:100%}
+body{padding-bottom:calc(76px + env(safe-area-inset-bottom))}
+a{color:var(--accent)}
+header{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--line)}
+header .in{max-width:480px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;justify-content:space-between}
+header h1{font-size:20px;margin:0;letter-spacing:.5px}
+.sync{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:6px;background:none;border:none;padding:8px 4px;min-height:44px;cursor:pointer;font-family:inherit}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--gone)}
+.dot.ok{background:var(--ok)}.dot.busy{background:var(--warn)}.dot.off{background:var(--accent)}
+main{max-width:480px;margin:0 auto;padding:0 16px}
+section.page{display:none;padding:12px 0 24px}
+section.page.on{display:block}
+h2{font-size:18px;margin:18px 0 8px}
+h3{font-size:16px;margin:16px 0 6px}
+.sub{font-size:13px;color:var(--muted)}
+.hint{font-size:14px;color:var(--muted);margin:8px 0}
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--card);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+nav.tabs .in{max-width:480px;margin:0 auto;display:flex}
+nav.tabs button{flex:1;min-height:60px;background:none;border:none;color:var(--muted);font-size:12px;font-family:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;position:relative;cursor:pointer}
+nav.tabs svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+nav.tabs button.on{color:var(--accent)}
+.badge{position:absolute;top:5px;left:50%;margin-left:5px;background:var(--accent);color:#fff;border-radius:9px;font-size:11px;min-width:18px;height:18px;line-height:18px;padding:0 5px;text-align:center}
+.badge:empty{display:none}
+input,select,textarea{width:100%;min-height:44px;font-size:16px;font-family:inherit;color:var(--text);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 12px}
+textarea{min-height:140px;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:-1px}
+input[type=checkbox]{width:22px;height:22px;min-height:0;accent-color:var(--accent);flex:none;margin:0}
+.btn{min-height:44px;padding:0 16px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--text);font-size:15px;font-family:inherit;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.danger{color:var(--accent)}
+.btn.block{width:100%}
+.btn:disabled{opacity:.5}
+.row-btns{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.row-btns .btn{flex:1}
+.toolbar{display:flex;gap:8px;margin:8px 0}
+.toolbar input{flex:1}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:4px 0 6px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chips.wrap{flex-wrap:wrap;overflow:visible}
+.chip{flex:none;min-height:40px;border-radius:20px;padding:0 14px;border:1px solid var(--line);background:var(--card);color:var(--text);font-size:14px;font-family:inherit;cursor:pointer}
+.chip.on{background:var(--text);color:var(--bg);border-color:var(--text)}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--card)}
+.seg button{flex:1;min-height:44px;border:none;border-right:1px solid var(--line);background:none;color:var(--text);font-size:15px;font-family:inherit;cursor:pointer;padding:0 6px}
+.seg button:last-child{border-right:none}
+.seg button.on{background:var(--text);color:var(--bg)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:10px 0;box-shadow:var(--shadow)}
+.alert{border-color:var(--warn);background:var(--warn-bg)}
+.alert ul{margin:4px 0 0;padding-left:20px}
+.cat-h{display:flex;align-items:center;gap:8px;margin:20px 0 2px;font-weight:600}
+.cat-h .n{font-weight:400;color:var(--muted);font-size:14px}
+.tag{width:10px;height:10px;border-radius:3px;flex:none}
+.item{display:flex;align-items:center;gap:10px;padding:12px 2px;border-bottom:1px solid var(--line);cursor:pointer;min-height:56px}
+.item .main{flex:1;min-width:0}
+.item .nm{overflow-wrap:anywhere}
+.item.gone .nm{color:var(--gone);text-decoration:line-through}
+.pill{font-size:12px;border-radius:10px;padding:2px 8px;white-space:nowrap;display:inline-block}
+.pill.ok{background:var(--ok-bg);color:var(--ok)}
+.pill.warn{background:var(--warn-bg);color:var(--warn)}
+.pill.gone{background:var(--gone-bg);color:var(--gone)}
+.pill.danger{background:var(--danger-bg);color:var(--accent)}
+.empty{text-align:center;color:var(--muted);padding:32px 0;font-size:15px}
+.fab{position:fixed;z-index:25;right:max(16px,calc(50% - 224px));bottom:calc(76px + env(safe-area-inset-bottom));width:56px;height:56px;border-radius:50%;border:none;background:var(--accent);color:#fff;font-size:30px;line-height:1;box-shadow:0 3px 10px rgba(0,0,0,.25);cursor:pointer}
+.fab[hidden]{display:none}
+.rec{cursor:pointer}
+.rec-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.rec-name{font-weight:600;font-size:16px}
+ul.ing{list-style:none;margin:0;padding:0}
+ul.ing li{padding:10px 0;border-bottom:1px solid var(--line)}
+ul.ing .l1{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+ul.ing .acts{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+ul.ing .acts .btn{min-height:40px;font-size:14px;padding:0 12px}
+ol.steps{padding-left:22px;margin:4px 0}
+ol.steps li{margin:6px 0}
+.backdrop{position:fixed;inset:0;background:rgba(0,0,0,.42);z-index:40;display:none}
+.backdrop.on{display:block}
+.sheet{position:fixed;z-index:41;left:50%;bottom:0;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;background:var(--card);border-radius:16px 16px 0 0;padding:8px 16px calc(20px + env(safe-area-inset-bottom));transform:translate(-50%,100%);transition:transform .25s ease;visibility:hidden}
+.sheet.on{transform:translate(-50%,0);visibility:visible}
+.sheet-head{display:flex;justify-content:space-between;align-items:center;position:sticky;top:-8px;background:var(--card);padding:8px 0;z-index:1}
+.sheet-head h2{margin:0}
+.icon-btn{min-width:44px;min-height:44px;border:none;background:none;color:var(--muted);font-size:24px;cursor:pointer;font-family:inherit}
+.field{margin:12px 0}
+.field>label{display:block;font-size:14px;color:var(--muted);margin-bottom:4px}
+.ing-row{display:grid;grid-template-columns:1fr 92px 44px;gap:6px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.ing-row .opt{grid-column:1/4;display:flex;align-items:center;gap:8px;font-size:14px;color:var(--muted)}
+.prow{display:grid;grid-template-columns:28px 1fr 96px;gap:6px;align-items:center;padding:6px 0}
+.prow.off input[type=text]{opacity:.45}
+.check-row{display:flex;align-items:center;gap:12px;padding:12px 2px;border-bottom:1px solid var(--line);min-height:56px}
+.check-row .main{flex:1;min-width:0}
+.check-row.done .nm{text-decoration:line-through;color:var(--gone)}
+.check-row select{width:auto;min-height:40px;font-size:15px;padding:4px 8px}
+.stack{display:flex;flex-direction:column;gap:6px;margin:8px 0}
+.status-line{font-size:14px;color:var(--muted);min-height:20px;margin:6px 0;overflow-wrap:anywhere}
+.flip{perspective:1000px;height:250px;margin:16px 0}
+.flip-inner{position:relative;width:100%;height:100%;transition:transform .55s ease;transform-style:preserve-3d}
+.flip.flipped .flip-inner{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center;border:1px solid var(--line)}
+.face.front{background:repeating-linear-gradient(45deg,var(--accent) 0 14px,#d66a52 14px 28px);color:#fff}
+.face.front .q{font-size:84px;font-weight:700;line-height:1}
+.face.back{background:var(--card);transform:rotateY(180deg)}
+.face.back .bn{font-size:26px;font-weight:700;margin:6px 0}
+.flip.shake .flip-inner{animation:shake .35s}
+@keyframes shake{0%,100%{transform:rotate(0)}25%{transform:rotate(-3deg)}75%{transform:rotate(3deg)}}
+pre.code{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px;font-size:12px;line-height:1.45;max-height:260px;overflow:auto;white-space:pre}
+.alias{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--line)}
+.alias-add{display:grid;grid-template-columns:1fr auto 1fr;gap:6px;align-items:center}
+.toast{position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--text);color:var(--bg);padding:10px 16px;border-radius:10px;font-size:14px;z-index:60;opacity:0;pointer-events:none;transition:opacity .2s;max-width:88vw;text-align:center}
+.toast.on{opacity:1}
+ol.howto{padding-left:22px}
+ol.howto li{margin:6px 0}
+</style>
+</head>
+<body>
+<header><div class="in">
+  <h1>冰箱有什麼</h1>
+  <button class="sync" id="sync-badge" type="button"><span class="dot" id="sync-dot"></span><span id="sync-text">只存在本機</span></button>
+</div></header>
+
+<main>
+<!-- 庫存 -->
+<section class="page" id="page-inv">
+  <div id="inv-alert"></div>
+  <input id="inv-q" type="search" placeholder="搜尋食材" autocomplete="off">
+  <div class="chips" id="inv-chips"></div>
+  <div id="inv-list"></div>
+</section>
+
+<!-- 食譜 -->
+<section class="page" id="page-rec">
+  <div class="seg" id="rec-mode">
+    <button type="button" data-v="all" class="on">全部食譜</button>
+    <button type="button" data-v="find">用食材找</button>
+    <button type="button" data-v="paste">貼上食譜</button>
+  </div>
+  <div id="rec-all">
+    <div class="toolbar"><input id="rec-q" type="search" placeholder="搜尋食譜" autocomplete="off"><button class="btn" id="rec-new" type="button">新增</button></div>
+    <div class="chips" id="rec-types"></div>
+    <div id="rec-list"></div>
+  </div>
+  <div id="rec-find" hidden>
+    <p class="hint">勾選想用掉的食材，下方會列出用得到這些食材的菜。</p>
+    <div class="chips wrap" id="find-chips"></div>
+    <label class="hint" style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="find-only">只顯示不缺食材的</label>
+    <div id="find-list"></div>
+  </div>
+  <div id="rec-paste" hidden>
+    <div class="field"><label for="paste-name">食譜名稱</label><input id="paste-name" autocomplete="off"></div>
+    <div class="field"><label for="paste-url">來源連結（選填）</label><input id="paste-url" type="url" inputmode="url" autocomplete="off" placeholder="https://"></div>
+    <div class="row-btns">
+      <button class="btn" id="paste-fetch" type="button" hidden>從連結讀取</button>
+      <button class="btn" id="paste-ocr-btn" type="button">上傳截圖</button>
+      <input type="file" id="paste-ocr" accept="image/*" multiple hidden>
+    </div>
+    <div class="status-line" id="paste-status"></div>
+    <div class="field"><label for="paste-text">材料文字</label><textarea id="paste-text" placeholder="把食譜的材料清單貼在這裡，例如：&#10;雞蛋 3顆&#10;番茄 2顆&#10;醬油 1大匙"></textarea></div>
+    <p class="hint">IG 影片上的材料字幕：iPhone 可以暫停後長按畫面上的字直接複製（原況文字），Android 可以用 Google 智慧鏡頭，複製後貼上。也可以截圖後按「上傳截圖」。</p>
+    <button class="btn primary block" id="paste-parse" type="button">拆解材料</button>
+    <div id="paste-rows"></div>
+    <div id="paste-result"></div>
+  </div>
+</section>
+
+<!-- 盲盒 -->
+<section class="page" id="page-box">
+  <div class="field"><label>最多缺幾樣食材</label>
+    <div class="seg" id="box-miss"><button type="button" data-v="0" class="on">0 樣</button><button type="button" data-v="1">1 樣</button><button type="button" data-v="all">不限</button></div>
+  </div>
+  <div class="field"><label>類型（不選代表全部）</label><div class="chips wrap" id="box-types"></div></div>
+  <div class="flip" id="box-card">
+    <div class="flip-inner">
+      <div class="face front"><div class="q">?</div><div style="margin-top:10px">今天吃什麼</div></div>
+      <div class="face back" id="box-back"></div>
+    </div>
+  </div>
+  <button class="btn primary block" id="box-draw" type="button">抽一道</button>
+  <div class="row-btns" id="box-after" hidden>
+    <button class="btn" id="box-again" type="button">再抽一次</button>
+    <button class="btn primary" id="box-go" type="button">就做這個</button>
+  </div>
+</section>
+
+<!-- 購物 -->
+<section class="page" id="page-shop">
+  <div class="toolbar"><input id="shop-in" list="dict-list" placeholder="要買什麼" autocomplete="off"><button class="btn primary" id="shop-add" type="button">加入</button></div>
+  <div id="shop-list"></div>
+  <div class="row-btns">
+    <button class="btn primary" id="shop-stock" type="button">把已買的放進庫存</button>
+    <button class="btn" id="shop-clear" type="button">清除已買</button>
+  </div>
+</section>
+
+<!-- 設定 -->
+<section class="page" id="page-set">
+  <h2>雲端同步</h2>
+  <p class="hint" id="sync-desc"></p>
+  <div class="field"><label for="sync-url">Apps Script 網址</label><input id="sync-url" type="url" inputmode="url" placeholder="https://script.google.com/macros/s/.../exec" autocomplete="off"></div>
+  <div class="row-btns">
+    <button class="btn primary" id="sync-save" type="button">儲存並測試連線</button>
+    <button class="btn" id="sync-now" type="button">立即同步</button>
+    <button class="btn danger" id="sync-off" type="button">停用同步</button>
+  </div>
+  <div id="share-box" hidden>
+    <div class="field"><label>分享給家人的連結（用這個連結開一次，就會自動設定同步）</label><input id="share-link" readonly></div>
+    <button class="btn block" id="share-copy" type="button">複製連結</button>
+  </div>
+
+  <h3>設定步驟</h3>
+  <ol class="howto">
+    <li>按下方「複製程式碼」。</li>
+    <li>打開 script.google.com，登入 Google 帳號，按「新專案」，刪掉預設內容後貼上程式碼，按儲存。</li>
+    <li>按右上角「部署」→「新增部署作業」，類型選「網頁應用程式」。執行身分選「我」，誰可以存取選「所有人」，按「部署」。</li>
+    <li>第一次部署會要求授權存取 Google 雲端硬碟，依畫面指示允許。</li>
+    <li>複製部署後的網頁應用程式網址，貼到上方欄位，按「儲存並測試連線」。</li>
+  </ol>
+  <p class="hint">資料會存在你雲端硬碟裡的 fridge-app-data.json。知道 Apps Script 網址的人都能讀寫資料，網址只給家人。</p>
+  <pre class="code" id="gas-code"></pre>
+  <button class="btn block" id="gas-copy" type="button">複製程式碼</button>
+
+  <h2>備份</h2>
+  <div class="row-btns">
+    <button class="btn" id="export-btn" type="button">匯出</button>
+    <button class="btn" id="import-btn" type="button">匯入</button>
+    <input type="file" id="import-file" accept="application/json,.json" hidden>
+  </div>
+
+  <h2>別名</h2>
+  <p class="hint">設為別名的兩個名稱，比對食譜時會當成同一樣食材。</p>
+  <div class="alias-add"><input id="alias-a" list="dict-list" placeholder="名稱" autocomplete="off"><span>＝</span><input id="alias-b" list="dict-list" placeholder="名稱" autocomplete="off"></div>
+  <button class="btn block" id="alias-add" type="button" style="margin-top:8px">新增別名</button>
+  <div id="alias-list"></div>
+</section>
+</main>
+
+<button class="fab" id="fab" type="button" aria-label="新增食材">＋</button>
+
+<nav class="tabs"><div class="in">
+  <button type="button" data-tab="inv"><svg viewBox="0 0 24 24"><rect x="5" y="2.5" width="14" height="19" rx="2"/><path d="M5 10h14M8.5 6v1.5M8.5 13v3"/></svg>庫存</button>
+  <button type="button" data-tab="rec"><svg viewBox="0 0 24 24"><path d="M4 4.5h6a2 2 0 0 1 2 2V20a1.5 1.5 0 0 0-1.5-1.5H4zM20 4.5h-6a2 2 0 0 0-2 2V20a1.5 1.5 0 0 1 1.5-1.5H20z"/></svg>食譜</button>
+  <button type="button" data-tab="box"><svg viewBox="0 0 24 24"><path d="M3.5 9h17v3h-17zM5 12v8.5h14V12M12 9v11.5M12 9C10 5 6.5 5 7 7.5 7.4 9 12 9 12 9zM12 9c2-4 5.5-4 5-1.5C16.6 9 12 9 12 9z"/></svg>盲盒</button>
+  <button type="button" data-tab="shop"><svg viewBox="0 0 24 24"><path d="M3 4h2.5l2.2 11h10.6L20.5 7.5H6.4"/><circle cx="9.5" cy="19.5" r="1.4"/><circle cx="16.5" cy="19.5" r="1.4"/></svg>購物<span class="badge" id="shop-badge"></span></button>
+  <button type="button" data-tab="set"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></svg>設定</button>
+</div></nav>
+
+<div class="backdrop" id="backdrop"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true">
+  <div class="sheet-head"><h2 id="sheet-title"></h2><button class="icon-btn" id="sheet-close" type="button" aria-label="關閉">×</button></div>
+  <div id="sheet-body"></div>
+</div>
+<div class="toast" id="toast"></div>
+<datalist id="dict-list"></datalist>
+
+<script type="text/plain" id="gas-src">// 冰箱有什麼：雲端同步用的 Google Apps Script
+// 部署成「網頁應用程式」，執行身分選「我」，存取權選「所有人」。
+var FILE_NAME = 'fridge-app-data.json';
+var KEYS = ['items', 'recipes', 'shop', 'aliases'];
+
+function doGet(e) {
+  var action = (e && e.parameter && e.parameter.action) || 'get';
+  try {
+    if (action === 'get') return out({ ok: true, data: readData() });
+    if (action === 'fetch') return out(fetchRecipe(e.parameter.url));
+    return out({ ok: false, error: 'unknown action' });
+  } catch (err) {
+    return out({ ok: false, error: String(err) });
+  }
+}
+
+function doPost(e) {
+  var lock = LockService.getScriptLock();
+  lock.waitLock(20000);
+  try {
+    var body = JSON.parse(e.postData.contents);
+    if (body.action !== 'put') return out({ ok: false, error: 'unknown action' });
+    var merged = merge(readData(), body.data || {});
+    getFile().setContent(JSON.stringify(merged));
+    return out({ ok: true, data: merged });
+  } catch (err) {
+    return out({ ok: false, error: String(err) });
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+function getFile() {
+  var props = PropertiesService.getScriptProperties();
+  var id = props.getProperty('FILE_ID');
+  if (id) {
+    try { return DriveApp.getFileById(id); } catch (err) {}
+  }
+  var file = DriveApp.createFile(FILE_NAME, '{}', MimeType.PLAIN_TEXT);
+  props.setProperty('FILE_ID', file.getId());
+  return file;
+}
+
+function readData() {
+  try {
+    return JSON.parse(getFile().getBlob().getDataAsString('UTF-8') || '{}');
+  } catch (err) {
+    return {};
+  }
+}
+
+// 同一筆資料（相同 id）以最後修改時間較新的為準
+function merge(a, b) {
+  var result = {};
+  KEYS.forEach(function (k) {
+    var map = {};
+    (a[k] || []).forEach(function (o) { if (o && o.id) map[o.id] = o; });
+    (b[k] || []).forEach(function (o) {
+      if (!o || !o.id) return;
+      var cur = map[o.id];
+      if (!cur || (o.updatedAt || 0) > (cur.updatedAt || 0)) map[o.id] = o;
+    });
+    result[k] = Object.keys(map).map(function (id) { return map[id]; });
+  });
+  return result;
+}
+
+function out(obj) {
+  return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
+}
+
+// 代替網頁抓取食譜網址，回傳食材文字
+function fetchRecipe(url) {
+  if (!/^https?:\/\//i.test(url || '')) return { ok: false, error: '網址格式不正確' };
+  var res = UrlFetchApp.fetch(url, {
+    muteHttpExceptions: true,
+    followRedirects: true,
+    headers: { 'User-Agent': 'Mozilla/5.0', 'Accept-Language': 'zh-TW,zh;q=0.9' }
+  });
+  var code = res.getResponseCode();
+  if (code >= 400) return { ok: false, error: '網站回應 ' + code };
+  var html = res.getContentText();
+  var re = /<script[^>]*ld\+json[^>]*>([\s\S]*?)<\/script>/gi;
+  var m;
+  while ((m = re.exec(html))) {
+    try {
+      var r = findRecipe(JSON.parse(m[1].trim()));
+      if (r && r.recipeIngredient) {
+        return { ok: true, source: 'structured', name: decode(r.name || ''), ingredients: [].concat(r.recipeIngredient).map(decode) };
+      }
+    } catch (err) {}
+  }
+  var desc = meta(html, 'og:description') || meta(html, 'description');
+  if (desc) return { ok: true, source: 'description', name: meta(html, 'og:title'), text: desc };
+  return { ok: false, error: '找不到食譜內容' };
+}
+
+function findRecipe(o) {
+  if (!o || typeof o !== 'object') return null;
+  if (Array.isArray(o)) {
+    for (var i = 0; i < o.length; i++) { var r = findRecipe(o[i]); if (r) return r; }
+    return null;
+  }
+  var t = o['@type'];
+  if (t === 'Recipe' || (Array.isArray(t) && t.indexOf('Recipe') >= 0)) return o;
+  if (o['@graph']) return findRecipe(o['@graph']);
+  return null;
+}
+
+function meta(html, key) {
+  var tags = html.match(/<meta[^>]+>/gi) || [];
+  for (var i = 0; i < tags.length; i++) {
+    var tag = tags[i];
+    var k = tag.match(/(?:property|name)\s*=\s*["']([^"']+)["']/i);
+    if (!k || k[1].toLowerCase() !== key) continue;
+    var c = tag.match(/content\s*=\s*"([^"]*)"/i) || tag.match(/content\s*=\s*'([^']*)'/i);
+    if (c) return decode(c[1]);
+  }
+  return '';
+}
+
+function decode(s) {
+  return String(s)
+    .replace(/&#(\d+);/g, function (_, n) { return String.fromCharCode(Number(n)); })
+    .replace(/&#x([0-9a-f]+);/gi, function (_, n) { return String.fromCharCode(parseInt(n, 16)); })
+    .replace(/&quot;/g, '"').replace(/&#39;|&apos;/g, "'")
+    .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&');
+}
+</script>
+
+<script>
+'use strict';
+/* ---------- 基本資料 ---------- */
+const CATS = [
+  {k:'fridge', n:'冷藏食材'},
+  {k:'freezer', n:'冷凍食材'},
+  {k:'fridgeSauce', n:'冷藏醬料調味料'},
+  {k:'roomSauce', n:'常溫醬料調味料'},
+  {k:'pantry', n:'常溫食材乾貨'}
+];
+const CATN = Object.fromEntries(CATS.map(c => [c.k, c.n]));
+const STATUSES = ['有', '快用完', '用完'];
+const TYPES = ['主菜', '湯品', '麵飯', '甜湯點心'];
+const IGNORE = new Set(['水', '開水', '熱水', '冷水', '清水', '冰水', '冰塊']);
+const COLLS = ['items', 'recipes', 'shop', 'aliases'];
+
+const DICT_SRC = {
+  fridge: '雞蛋 番茄 蔥 薑 大蒜 辣椒 青椒 紅蘿蔔 白蘿蔔 高麗菜 小白菜 青江菜 地瓜葉 菠菜 空心菜 花椰菜 絲瓜 冬瓜 小黃瓜 玉米 茄子 香菇 金針菇 杏鮑菇 豆腐 嫩豆腐 板豆腐 皮蛋 豆干 牛奶 奶油 起司 泡菜 香菜 九層塔 檸檬 蛤蜊 豬肉片 豬肉絲 豬絞肉 五花肉 排骨 雞腿 雞胸肉 牛肉片 鮭魚 蝦仁 培根 火腿 白飯 鮮奶油 豆芽菜',
+  freezer: '冷凍水餃 冷凍餛飩 冷凍蝦仁 冷凍玉米粒 冷凍毛豆 冷凍青豆仁 冷凍雞塊 冷凍魚片 湯圓 冷凍薯條',
+  fridgeSauce: '味噌 番茄醬 美乃滋 沙茶醬 豆瓣醬 甜麵醬 辣椒醬 蠔油 芝麻醬 咖哩塊 花生醬 果醬 韓式辣醬 蒜蓉醬',
+  roomSauce: '醬油 醬油膏 鹽 糖 冰糖 紅糖 黑糖 白胡椒粉 黑胡椒 米酒 紹興酒 醋 烏醋 香油 麻油 沙拉油 橄欖油 太白粉 地瓜粉 五香粉 八角 花椒 辣椒粉 雞粉 柴魚粉 蜂蜜',
+  pantry: '白米 糯米 麵條 義大利麵 冬粉 麵線 米粉 泡麵 鮪魚罐頭 玉米罐頭 肉醬罐頭 紅棗 枸杞 黑木耳 乾香菇 白木耳 紅豆 綠豆 花生 海帶芽 蝦米 柴魚片 麵粉 燕麥 乾辣椒 油蔥酥 洋蔥 馬鈴薯 地瓜'
+};
+const DICT = {};
+for (const [k, s] of Object.entries(DICT_SRC)) s.split(/\s+/).forEach(n => { if (n) DICT[n] = k; });
+
+const ALIAS_SRC = '雞蛋=蛋 大蒜=蒜頭 大蒜=蒜 大蒜=蒜瓣 蔥=青蔥 薑=老薑 薑=生薑 糖=砂糖 糖=白糖 糖=細砂糖 糖=二砂 鹽=食鹽 番茄=蕃茄 高麗菜=甘藍 白胡椒粉=胡椒粉 香油=芝麻油 麻油=黑麻油 醋=白醋 醋=米醋 豬絞肉=絞肉 豬絞肉=豬肉末 白米=米 沙拉油=食用油 沙拉油=油 白木耳=銀耳 黑木耳=木耳 醬油=生抽 辣椒=紅辣椒';
+
+// 食材以「名稱:用量」表示，結尾加「:?」代表可省略
+const RECIPE_SRC = [
+  ['番茄炒蛋','主菜','番茄:2顆|雞蛋:3顆|蔥:1根:?|鹽:少許|糖:1小匙:?|番茄醬:1大匙:?','蛋液加少許鹽打散，下鍋炒到半熟後盛起。番茄切塊下鍋炒軟出汁，加糖和番茄醬調味。倒回炒蛋拌勻，撒上蔥花起鍋。'],
+  ['蔥蛋','主菜','雞蛋:3顆|蔥:2根|鹽:少許','蔥切成蔥花，和蛋、鹽一起打勻。熱鍋多放一點油，倒入蛋液。底部定型後翻面，煎到兩面金黃。'],
+  ['蒸蛋','主菜','雞蛋:2顆|水:蛋液的1.5倍|鹽:少許|蔥:少許:?','蛋打散，加水和鹽攪勻後過篩。碗上蓋盤子，放進電鍋，外鍋加1杯水蒸到跳起。撒上蔥花。'],
+  ['麻婆豆腐','主菜','豆腐:1盒|豬絞肉:150克|豆瓣醬:1大匙|大蒜:2瓣|蔥:1根|醬油:1大匙|太白粉:1小匙|花椒:少許:?','豆腐切丁，蒜和蔥切末。絞肉炒到變色，加蒜末和豆瓣醬炒香。加半碗水和醬油，放入豆腐煮3分鐘。太白粉加水勾芡，撒蔥花和花椒。'],
+  ['皮蛋豆腐','主菜','豆腐:1盒|皮蛋:1顆|醬油膏:2大匙|柴魚片:少許:?|蔥:少許:?','豆腐倒出放盤中，皮蛋切塊放上面。淋上醬油膏，撒柴魚片和蔥花。'],
+  ['三杯雞','主菜','雞腿:2隻|薑:1段|大蒜:8瓣|九層塔:1把|麻油:3大匙|醬油:3大匙|米酒:3大匙|冰糖:1小匙:?|辣椒:1根:?','雞腿切塊，薑切片。麻油小火煸薑片到捲起，加蒜粒炒香。下雞肉煎到表面金黃，加醬油、米酒、冰糖。蓋鍋燜10分鐘後開蓋收汁，起鍋前放九層塔。'],
+  ['宮保雞丁','主菜','雞胸肉:1片|乾辣椒:5根|花生:1把|蔥:2根|大蒜:2瓣|醬油:1大匙|醋:1大匙|糖:1小匙|太白粉:1小匙|花椒:少許:?','雞胸肉切丁，用一半醬油和太白粉抓醃。乾辣椒和花椒小火炒香，下雞丁炒熟。加蒜、蔥段和剩下的醬油、醋、糖拌炒。起鍋前加花生。'],
+  ['紅燒肉','主菜','五花肉:600克|薑:3片|蔥:2根|醬油:4大匙|冰糖:1大匙|米酒:3大匙|八角:2顆:?','五花肉切塊汆燙後洗淨。冰糖小火炒到焦糖色，下肉翻炒上色。加薑、蔥、醬油、米酒、八角和淹過肉的水。小火燉1小時，最後開大火收汁。'],
+  ['青椒炒肉絲','主菜','豬肉絲:200克|青椒:2顆|大蒜:2瓣|醬油:1大匙|太白粉:1小匙|鹽:少許','肉絲用醬油和太白粉抓醃10分鐘。青椒切絲。肉絲炒到變色後盛起。蒜末爆香，下青椒炒軟，倒回肉絲，加鹽調味。'],
+  ['蒜泥白肉','主菜','五花肉:300克|大蒜:5瓣|醬油膏:2大匙|糖:1小匙:?|香油:少許:?|小黃瓜:1根:?','五花肉整塊放進滾水，加蓋小火煮20分鐘，關火再燜10分鐘。取出放涼後切薄片。蒜泥加醬油膏、糖、香油調成醬，淋在肉片上。'],
+  ['蛤蜊絲瓜','主菜','絲瓜:1條|蛤蜊:300克|薑:3片|鹽:少許|米酒:1大匙:?','蛤蜊泡鹽水吐沙，絲瓜去皮切塊。薑絲爆香，下絲瓜炒到稍軟。加蛤蜊和米酒，蓋鍋煮到蛤蜊打開，加鹽調味。'],
+  ['炒高麗菜','主菜','高麗菜:半顆|大蒜:3瓣|鹽:少許|紅蘿蔔:少許:?|蝦米:1小把:?','高麗菜用手撕成片，洗淨瀝乾。蒜片和蝦米爆香，下高麗菜大火快炒。加少許水和鹽，炒到軟即可。'],
+  ['涼拌小黃瓜','主菜','小黃瓜:2根|大蒜:3瓣|鹽:1小匙|醋:1大匙|糖:1大匙|辣椒:1根:?|香油:少許:?','小黃瓜拍裂切段，加鹽抓勻放15分鐘，倒掉出水。加蒜末、辣椒、醋、糖、香油拌勻，冷藏1小時更入味。'],
+  ['螞蟻上樹','主菜','冬粉:2把|豬絞肉:150克|豆瓣醬:1大匙|大蒜:2瓣|蔥:1根|醬油:1大匙|水:1杯','冬粉泡軟剪短。絞肉炒散，加蒜末和豆瓣醬炒香。加水和醬油煮滾，放入冬粉拌炒到吸乾湯汁，撒蔥花。'],
+  ['番茄蛋花湯','湯品','番茄:2顆|雞蛋:2顆|鹽:少許|蔥:1根:?|太白粉:1小匙:?|香油:少許:?','番茄切塊，用少許油炒軟。加4碗水煮滾，轉小火煮5分鐘。可用太白粉水勾薄芡，慢慢倒入蛋液成蛋花。加鹽、香油，撒蔥花。'],
+  ['紅棗枸杞雞湯','湯品','雞腿:2隻|紅棗:8顆|枸杞:1大匙|薑:3片|鹽:少許|米酒:2大匙:?','雞腿切塊汆燙洗淨。放入鍋中加紅棗、薑片和淹過食材的水。電鍋外鍋2杯水，或小火燉40分鐘。起鍋前10分鐘放枸杞，加鹽和米酒。'],
+  ['玉米濃湯','湯品','玉米罐頭:1罐|雞蛋:1顆|牛奶:200毫升|太白粉:2大匙|鹽:少許|奶油:1小塊:?|火腿:2片:?','奶油融化後加入玉米和火腿丁拌炒。加3碗水和牛奶煮滾。太白粉加水勾芡，倒入蛋液，加鹽調味。'],
+  ['味噌豆腐湯','湯品','味噌:2大匙|豆腐:1盒|海帶芽:1小把|蔥:1根:?|柴魚片:少許:?','水煮滾後放柴魚片煮2分鐘撈起。放入豆腐丁和海帶芽。關火後用湯杓把味噌在湯裡化開，撒蔥花。'],
+  ['酸辣湯','湯品','豆腐:半盒|黑木耳:2朵|紅蘿蔔:半根|雞蛋:1顆|烏醋:3大匙|醬油:1大匙|白胡椒粉:1小匙|太白粉:2大匙|豬肉絲:100克:?','豆腐、木耳、紅蘿蔔切絲。5碗水煮滾，放入所有料和肉絲煮5分鐘。加醬油，用太白粉水勾芡。倒入蛋液，關火後加烏醋和白胡椒粉。'],
+  ['冬瓜排骨湯','湯品','冬瓜:600克|排骨:300克|薑:3片|鹽:少許','排骨汆燙洗淨，冬瓜去皮切塊。排骨、薑片加水煮滾後小火煮30分鐘。放入冬瓜再煮15分鐘，加鹽調味。'],
+  ['滷肉飯','麵飯','五花肉:600克|油蔥酥:3大匙|醬油:4大匙|冰糖:1大匙|米酒:2大匙|白米:2杯|五香粉:少許:?|雞蛋:4顆:?','五花肉切小條，下鍋炒到出油。加油蔥酥、醬油、冰糖、米酒、五香粉和淹過肉的水。可放入水煮蛋一起滷，小火燉1小時。淋在白飯上。'],
+  ['蛋炒飯','麵飯','白飯:2碗|雞蛋:2顆|蔥:2根|鹽:少許|醬油:1小匙:?|火腿:2片:?','白飯最好用冷飯。蛋打散下鍋炒到半熟，加入白飯炒散。加火腿丁、鹽，沿鍋邊淋醬油，最後加蔥花。'],
+  ['泡菜炒飯','麵飯','白飯:2碗|泡菜:1碗|醬油:1小匙|豬肉片:100克:?|雞蛋:1顆:?|蔥:1根:?','肉片炒熟，加入切碎的泡菜炒香。放入白飯炒散，加醬油和少許泡菜汁調味。可另外煎一顆荷包蛋放在上面。'],
+  ['咖哩飯','麵飯','咖哩塊:半盒|馬鈴薯:2顆|紅蘿蔔:1根|洋蔥:1顆|豬肉片:300克|白米:2杯','洋蔥切塊炒軟，加肉片炒到變色。加入馬鈴薯、紅蘿蔔和淹過食材的水，煮20分鐘。關火放咖哩塊攪到化開，再小火煮5分鐘。淋在白飯上。'],
+  ['蔥油拌麵','麵飯','麵條:2人份|蔥:4根|醬油:2大匙|糖:1小匙|沙拉油:3大匙|醬油膏:1大匙:?','蔥切段，用油小火慢炸到焦黃，撈出蔥段。油裡加醬油、醬油膏、糖煮滾成蔥油醬。麵條煮熟瀝乾，拌入蔥油醬和炸好的蔥。'],
+  ['炸醬麵','麵飯','麵條:2人份|豬絞肉:200克|豆干:4塊|甜麵醬:2大匙|豆瓣醬:1大匙|大蒜:2瓣|糖:1小匙|小黃瓜:1根:?','豆干切丁。絞肉炒散，加蒜末和豆干炒香。加甜麵醬、豆瓣醬、糖和半碗水，小火煮10分鐘成炸醬。麵煮熟，放上炸醬和小黃瓜絲。'],
+  ['麻油麵線','麵飯','麵線:2把|麻油:2大匙|薑:5片|雞蛋:2顆:?|枸杞:少許:?|米酒:少許:?','麵線煮熟撈起。麻油小火煸薑片到捲起。可打入雞蛋煎成荷包蛋。麵線拌入麻油薑片，加少許米酒和枸杞。'],
+  ['紅豆湯','甜湯點心','紅豆:300克|糖:150克|水:2000毫升','紅豆洗淨泡水4小時。加水煮滾後轉小火煮1小時，或用電鍋外鍋2杯水蒸2次。紅豆軟爛後加糖拌勻。'],
+  ['綠豆湯','甜湯點心','綠豆:300克|糖:150克|水:2000毫升','綠豆洗淨。加水煮滾後轉小火煮30分鐘，煮到綠豆開花。加糖拌勻，可冰涼後再吃。'],
+  ['銀耳紅棗湯','甜湯點心','白木耳:1朵|紅棗:10顆|冰糖:80克|枸杞:1小匙:?','白木耳泡發後去蒂，撕成小朵。加紅棗和水，小火煮1小時到湯汁變稠。加冰糖煮化，最後放枸杞。']
+];
+
+function parseIngSrc(s) {
+  return s.split('|').map(p => {
+    const [name, amt, opt] = p.split(':');
+    return {name, amt: amt || '', optional: opt === '?'};
+  });
+}
+const BUILTIN_RECIPES = RECIPE_SRC.map((r, i) => ({
+  id: 'rb-' + String(i + 1).padStart(2, '0'), name: r[0], type: r[1], ings: parseIngSrc(r[2]),
+  steps: r[3], url: '', builtin: true, updatedAt: 0
+}));
+const BUILTIN_ALIASES = ALIAS_SRC.split(' ').map((p, i) => {
+  const [a, b] = p.split('=');
+  return {id: 'ab-' + String(i + 1).padStart(2, '0'), a, b, updatedAt: 0};
+});
+
+/* ---------- 儲存 ---------- */
+const LS_KEY = 'fridge-app-v1', LS_META = 'fridge-app-meta', LS_SYNC = 'fridge-app-sync', LS_DIRTY = 'fridge-app-dirty', LS_TAB = 'fridge-app-tab';
+let S = {items: [], recipes: [], shop: [], aliases: []};
+let META = {recent: []};
+
+function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+function lsSet(k, v) { try { localStorage.setItem(k, v); return true; } catch (e) { return false; } }
+function lsDel(k) { try { localStorage.removeItem(k); } catch (e) {} }
+
+function arr(x) { return Array.isArray(x) ? x.filter(o => o && typeof o === 'object' && o.id) : []; }
+function cleanData(d) { const o = {}; COLLS.forEach(k => { o[k] = arr(d && d[k]); }); return o; }
+function mergeData(a, b) {
+  const out = {};
+  COLLS.forEach(k => {
+    const m = new Map();
+    arr(a && a[k]).forEach(o => m.set(o.id, o));
+    arr(b && b[k]).forEach(o => {
+      const c = m.get(o.id);
+      if (!c || (o.updatedAt || 0) > (c.updatedAt || 0)) m.set(o.id, o);
+    });
+    out[k] = [...m.values()];
+  });
+  return out;
+}
+function seedBuiltins() {
+  const rids = new Set(S.recipes.map(r => r.id));
+  BUILTIN_RECIPES.forEach(r => { if (!rids.has(r.id)) S.recipes.push(JSON.parse(JSON.stringify(r))); });
+  const aids = new Set(S.aliases.map(a => a.id));
+  BUILTIN_ALIASES.forEach(a => { if (!aids.has(a.id)) S.aliases.push({...a}); });
+}
+function load() {
+  try { const d = JSON.parse(lsGet(LS_KEY)); if (d) S = cleanData(d); } catch (e) {}
+  try { const m = JSON.parse(lsGet(LS_META)); if (m && Array.isArray(m.recent)) META = m; } catch (e) {}
+  seedBuiltins();
+}
+function persist() {
+  IDX = null;
+  if (!lsSet(LS_KEY, JSON.stringify(S))) toast('儲存失敗，瀏覽器的儲存空間可能已滿');
+}
+function commit() { persist(); markDirty(); renderAll(); }
+
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
+function live(list) { return list.filter(x => !x.deleted); }
+function put(coll, obj) {
+  IDX = null;
+  obj.updatedAt = Date.now();
+  const list = S[coll], i = list.findIndex(x => x.id === obj.id);
+  if (i >= 0) list[i] = obj; else list.push(obj);
+}
+function remove(coll, id) {
+  IDX = null;
+  const list = S[coll], i = list.findIndex(x => x.id === id);
+  if (i >= 0) list[i] = {id, deleted: true, updatedAt: Date.now()};
+}
+
+/* ---------- 名稱比對 ---------- */
+function norm(s) {
+  return String(s || '').replace(/[\uFF01-\uFF5E]/g, c => String.fromCharCode(c.charCodeAt(0) - 0xFEE0))
+    .replace(/\s+/g, '').toLowerCase();
+}
+let IDX = null;
+function index() {
+  if (IDX) return IDX;
+  const parent = new Map();
+  const find = x => { let r = x; while (parent.has(r)) r = parent.get(r); return r; };
+  live(S.aliases).forEach(a => {
+    const ra = find(norm(a.a)), rb = find(norm(a.b));
+    if (ra && rb && ra !== rb) parent.set(ra, rb);
+  });
+  const canon = n => find(norm(n));
+  const inv = new Map(), all = new Map();
+  live(S.items).forEach(it => {
+    const k = canon(it.name);
+    if (!all.has(k)) all.set(k, []);
+    all.get(k).push(it);
+    if (it.status !== '用完') {
+      if (!inv.has(k)) inv.set(k, []);
+      inv.get(k).push(it);
+    }
+  });
+  IDX = {canon, inv, all};
+  return IDX;
+}
+function matchIngs(ings) {
+  const ix = index(), have = [], miss = [];
+  (ings || []).forEach(g => {
+    if (!g.name || IGNORE.has(norm(g.name))) return;
+    const its = ix.inv.get(ix.canon(g.name));
+    if (its && its.length) have.push({g, item: its[0]}); else miss.push(g);
+  });
+  return {have, miss, missCount: miss.filter(g => !g.optional).length};
+}
+function guessCat(name) {
+  if (DICT[name]) return DICT[name];
+  const ix = index(), k = ix.canon(name);
+  const its = ix.all.get(k);
+  if (its && its.length) return its[0].cat;
+  for (const [n, c] of Object.entries(DICT)) if (ix.canon(n) === k) return c;
+  return 'fridge';
+}
+
+/* ---------- 工具 ---------- */
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+function esc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function todayDate() { const d = new Date(); d.setHours(0, 0, 0, 0); return d; }
+function daysUntil(s) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s || '');
+  if (!m) return null;
+  return Math.round((new Date(+m[1], +m[2] - 1, +m[3]) - todayDate()) / 86400000);
+}
+function expText(d) {
+  if (d < 0) return '已過期 ' + (-d) + ' 天';
+  if (d === 0) return '今天到期';
+  return '還有 ' + d + ' 天到期';
+}
+let toastTimer = null;
+function toast(msg) {
+  const t = $('#toast');
+  t.textContent = msg;
+  t.classList.add('on');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('on'), 2600);
+}
+function bindSeg(el, cb) {
+  el.addEventListener('click', e => {
+    const b = e.target.closest('button[data-v]');
+    if (!b) return;
+    el.querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b));
+    cb(b.dataset.v);
+  });
+}
+function segVal(el) { const b = el.querySelector('button.on'); return b ? b.dataset.v : null; }
+function statusPill(st) {
+  if (st === '快用完') return '<span class="pill warn">快用完</span>';
+  if (st === '用完') return '<span class="pill gone">用完</span>';
+  return '';
+}
+async function copyText(text) {
+  try { await navigator.clipboard.writeText(text); toast('已複製'); return; } catch (e) {}
+  const ta = document.createElement('textarea');
+  ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); toast('已複製'); } catch (e) { toast('複製失敗，請手動選取'); }
+  ta.remove();
+}
+function splitSteps(s) { return String(s || '').split(/[。\n]+/).map(x => x.trim()).filter(Boolean); }
+function catOptions(sel) { return CATS.map(c => `<option value="${c.k}"${c.k === sel ? ' selected' : ''}>${c.n}</option>`).join(''); }
+
+/* ---------- 底部面板 ---------- */
+function openSheet(title, html) {
+  $('#sheet-title').textContent = title;
+  $('#sheet-body').innerHTML = html;
+  $('#sheet').scrollTop = 0;
+  $('#sheet').classList.add('on');
+  $('#backdrop').classList.add('on');
+  return $('#sheet-body');
+}
+function closeSheet() {
+  $('#sheet').classList.remove('on');
+  $('#backdrop').classList.remove('on');
+}
+$('#sheet-close').onclick = closeSheet;
+$('#backdrop').onclick = closeSheet;
+
+/* ---------- 分頁 ---------- */
+let curTab = 'inv';
+function showTab(t) {
+  curTab = t;
+  $$('section.page').forEach(s => s.classList.toggle('on', s.id === 'page-' + t));
+  $$('nav.tabs button').forEach(b => b.classList.toggle('on', b.dataset.tab === t));
+  $('#fab').hidden = t !== 'inv';
+  lsSet(LS_TAB, t);
+  window.scrollTo(0, 0);
+}
+$$('nav.tabs button').forEach(b => b.onclick = () => showTab(b.dataset.tab));
+$('#sync-badge').onclick = () => showTab('set');
+
+/* ---------- 庫存 ---------- */
+let invCat = 'all';
+function renderInventory() {
+  const items = live(S.items);
+  const soon = items.filter(i => i.exp && i.status !== '用完')
+    .map(i => ({i, d: daysUntil(i.exp)})).filter(x => x.d !== null && x.d <= 3).sort((a, b) => a.d - b.d);
+  $('#inv-alert').innerHTML = soon.length ? `<div class="card alert"><strong>到期提醒</strong><ul>${soon.map(x =>
+    `<li>${esc(x.i.name)}（${esc(CATN[x.i.cat] || '')}）：${expText(x.d)}</li>`).join('')}</ul></div>` : '';
+
+  const counts = {};
+  items.forEach(i => { counts[i.cat] = (counts[i.cat] || 0) + 1; });
+  $('#inv-chips').innerHTML = `<button class="chip${invCat === 'all' ? ' on' : ''}" data-cat="all" type="button">全部 ${items.length}</button>` +
+    CATS.map(c => `<button class="chip${invCat === c.k ? ' on' : ''}" data-cat="${c.k}" type="button">${c.n} ${counts[c.k] || 0}</button>`).join('');
+
+  const q = norm($('#inv-q').value);
+  const shown = items.filter(i => (invCat === 'all' || i.cat === invCat) && (!q || norm(i.name).includes(q) || norm(i.note).includes(q)));
+  if (!items.length) {
+    $('#inv-list').innerHTML = '<div class="empty">還沒有登記任何食材。<br>按右下角的「＋」新增。</div>';
+    return;
+  }
+  if (!shown.length) { $('#inv-list').innerHTML = '<div class="empty">沒有符合的食材</div>'; return; }
+  const order = {'有': 0, '快用完': 1, '用完': 2};
+  $('#inv-list').innerHTML = CATS.map(c => {
+    const list = shown.filter(i => i.cat === c.k).sort((a, b) => (order[a.status] - order[b.status]) || a.name.localeCompare(b.name, 'zh-Hant'));
+    if (!list.length) return '';
+    return `<div class="cat-h"><span class="tag" style="background:var(--c-${c.k})"></span>${c.n}<span class="n">${list.length}</span></div>` +
+      list.map(i => {
+        const d = i.exp ? daysUntil(i.exp) : null;
+        const sub = [i.qty, d !== null ? (d <= 3 ? expText(d) : '到期 ' + i.exp) : '', i.note].filter(Boolean).map(esc).join(' · ');
+        return `<div class="item${i.status === '用完' ? ' gone' : ''}" data-iid="${esc(i.id)}"><div class="main"><div class="nm">${esc(i.name)}</div>${sub ? `<div class="sub">${sub}</div>` : ''}</div>${statusPill(i.status)}${d !== null && d <= 3 && i.status !== '用完' ? '<span class="pill danger">' + (d < 0 ? '過期' : '快到期') + '</span>' : ''}</div>`;
+      }).join('');
+  }).join('');
+}
+$('#inv-q').addEventListener('input', renderInventory);
+$('#inv-chips').addEventListener('click', e => {
+  const b = e.target.closest('[data-cat]');
+  if (b) { invCat = b.dataset.cat; renderInventory(); }
+});
+$('#inv-list').addEventListener('click', e => {
+  const r = e.target.closest('[data-iid]');
+  if (r) openItemSheet(S.items.find(x => x.id === r.dataset.iid));
+});
+$('#fab').onclick = () => openItemSheet(null);
+
+function openItemSheet(item) {
+  const isNew = !item;
+  const it = item ? {...item} : {id: uid(), name: '', cat: invCat !== 'all' ? invCat : 'fridge', qty: '', status: '有', exp: '', note: ''};
+  const body = openSheet(isNew ? '新增食材' : '編輯食材', `
+    <div class="field"><label for="f-name">名稱</label><input id="f-name" list="dict-list" value="${esc(it.name)}" autocomplete="off"></div>
+    <div class="field"><label for="f-cat">分類</label><select id="f-cat">${catOptions(it.cat)}</select></div>
+    <div class="field"><label for="f-qty">數量（選填）</label><input id="f-qty" value="${esc(it.qty)}" placeholder="例如 3 包、半瓶、500 克" autocomplete="off"></div>
+    <div class="field"><label>狀態</label><div class="seg" id="f-status">${STATUSES.map(s => `<button type="button" data-v="${s}"${s === it.status ? ' class="on"' : ''}>${s}</button>`).join('')}</div></div>
+    <div class="field"><label for="f-exp">到期日（選填）</label><input id="f-exp" type="date" value="${esc(it.exp)}"></div>
+    <div class="field"><label for="f-note">備註（選填）</label><input id="f-note" value="${esc(it.note)}" autocomplete="off"></div>
+    <div class="row-btns"><button class="btn primary" id="f-save" type="button">儲存</button>${isNew ? '' : '<button class="btn danger" id="f-del" type="button">刪除</button>'}</div>`);
+  bindSeg(body.querySelector('#f-status'), () => {});
+  const nameIn = body.querySelector('#f-name');
+  nameIn.addEventListener('input', () => {
+    const n = nameIn.value.trim();
+    if (isNew && DICT[n]) body.querySelector('#f-cat').value = DICT[n];
+  });
+  if (isNew) setTimeout(() => nameIn.focus(), 260);
+  body.querySelector('#f-save').onclick = () => {
+    const name = nameIn.value.trim();
+    if (!name) { toast('請填寫名稱'); nameIn.focus(); return; }
+    const prev = item ? item.status : null;
+    const obj = {
+      id: it.id, name, cat: body.querySelector('#f-cat').value, qty: body.querySelector('#f-qty').value.trim(),
+      status: segVal(body.querySelector('#f-status')) || '有', exp: body.querySelector('#f-exp').value,
+      note: body.querySelector('#f-note').value.trim()
+    };
+    put('items', obj);
+    closeSheet();
+    if (obj.status === '用完' && prev !== '用完' && confirm(`「${name}」已用完，要加入購物清單嗎？`)) addShop(name, obj.cat);
+    commit();
+    toast(isNew ? '已新增' : '已儲存');
+  };
+  const del = body.querySelector('#f-del');
+  if (del) del.onclick = () => {
+    if (!confirm(`確定刪除「${it.name}」？`)) return;
+    remove('items', it.id);
+    closeSheet(); commit(); toast('已刪除');
+  };
+}
+
+/* ---------- 食譜列表 ---------- */
+let recType = 'all';
+function recipeCard(r, m) {
+  const missNames = m.miss.filter(g => !g.optional).map(g => g.name);
+  return `<div class="card rec" data-rid="${esc(r.id)}"><div class="rec-top"><span class="rec-name">${esc(r.name)}</span>${m.missCount === 0 ? '<span class="pill ok">食材齊全</span>' : `<span class="pill warn">缺 ${m.missCount} 樣</span>`}</div><div class="sub">${esc(r.type)}${missNames.length ? ' · 缺：' + esc(missNames.join('、')) : ''}</div></div>`;
+}
+function renderRecipeList() {
+  $('#rec-types').innerHTML = ['all', ...TYPES].map(t => `<button class="chip${recType === t ? ' on' : ''}" data-t="${t}" type="button">${t === 'all' ? '全部' : t}</button>`).join('');
+  const q = norm($('#rec-q').value);
+  const list = live(S.recipes).filter(r => (recType === 'all' || r.type === recType) &&
+    (!q || norm(r.name).includes(q) || (r.ings || []).some(g => norm(g.name).includes(q))))
+    .map(r => ({r, m: matchIngs(r.ings)}))
+    .sort((a, b) => a.m.missCount - b.m.missCount || a.r.name.localeCompare(b.r.name, 'zh-Hant'));
+  $('#rec-list').innerHTML = list.length ? list.map(x => recipeCard(x.r, x.m)).join('') : '<div class="empty">沒有符合的食譜</div>';
+}
+$('#rec-q').addEventListener('input', renderRecipeList);
+$('#rec-types').addEventListener('click', e => {
+  const b = e.target.closest('[data-t]');
+  if (b) { recType = b.dataset.t; renderRecipeList(); }
+});
+$('#rec-new').onclick = () => openRecipeEdit(null);
+bindSeg($('#rec-mode'), v => {
+  $('#rec-all').hidden = v !== 'all';
+  $('#rec-find').hidden = v !== 'find';
+  $('#rec-paste').hidden = v !== 'paste';
+});
+document.addEventListener('click', e => {
+  const c = e.target.closest('.rec[data-rid]');
+  if (c) openRecipe(c.dataset.rid);
+});
+
+/* ---------- 食譜詳細 ---------- */
+function openRecipe(id) {
+  const r = S.recipes.find(x => x.id === id);
+  if (!r || r.deleted) return;
+  const m = matchIngs(r.ings);
+  const items = live(S.items).filter(i => i.status !== '用完').sort((a, b) => a.name.localeCompare(b.name, 'zh-Hant'));
+  const body = openSheet(r.name, `
+    <div class="sub">${esc(r.type)}${r.url ? ` · <a href="${esc(r.url)}" target="_blank" rel="noopener">來源連結</a>` : ''}</div>
+    <h3>家裡有（${m.have.length}）</h3>
+    ${m.have.length ? `<ul class="ing">${m.have.map(({g, item}) => `<li><div class="l1"><span>${esc(g.name)} <span class="sub">${esc(g.amt)}</span></span><span>${statusPill(item.status)}</span></div><div class="sub">庫存：${esc(item.name)}${item.qty ? ' · ' + esc(item.qty) : ''}</div></li>`).join('')}</ul>` : '<p class="hint">沒有</p>'}
+    <h3>還缺（${m.miss.length}）</h3>
+    ${m.miss.length ? `<ul class="ing">${m.miss.map((g, i) => `<li><div class="l1"><span>${esc(g.name)} <span class="sub">${esc(g.amt)}</span></span>${g.optional ? '<span class="pill gone">可省略</span>' : ''}</div>
+      <div class="acts"><button class="btn" type="button" data-shop="${i}">加入購物清單</button>${items.length ? `<button class="btn" type="button" data-have="${i}">家裡其實有</button>` : ''}</div>
+      <div data-pick="${i}" hidden style="margin-top:8px"><select><option value="">選擇家裡對應的食材</option>${items.map(it => `<option value="${esc(it.id)}">${esc(it.name)}（${esc(CATN[it.cat] || '')}）</option>`).join('')}</select></div></li>`).join('')}</ul>
+      <button class="btn block" type="button" id="r-shop-all" style="margin-top:10px">把缺少的全部加入購物清單</button>` : '<p class="hint">食材都齊了。</p>'}
+    <h3>做法</h3>
+    ${splitSteps(r.steps).length ? `<ol class="steps">${splitSteps(r.steps).map(s => `<li>${esc(s)}</li>`).join('')}</ol>` : '<p class="hint">沒有填寫做法</p>'}
+    <div class="row-btns" style="margin-top:18px">
+      <button class="btn primary" type="button" id="r-cooked">我做了這道</button>
+      <button class="btn" type="button" id="r-edit">編輯</button>
+      <button class="btn danger" type="button" id="r-del">刪除</button>
+    </div>`);
+  body.querySelectorAll('[data-shop]').forEach(b => b.onclick = () => {
+    const g = m.miss[+b.dataset.shop];
+    toast(addShop(g.name) ? `已把「${g.name}」加入購物清單` : `「${g.name}」已在購物清單裡`);
+    persist(); markDirty(); renderShop(); renderBadges();
+    b.disabled = true;
+  });
+  body.querySelectorAll('[data-have]').forEach(b => b.onclick = () => {
+    const box = body.querySelector(`[data-pick="${b.dataset.have}"]`);
+    box.hidden = !box.hidden;
+  });
+  body.querySelectorAll('[data-pick] select').forEach(sel => sel.onchange = () => {
+    const g = m.miss[+sel.parentElement.dataset.pick];
+    const it = S.items.find(x => x.id === sel.value);
+    if (!it) return;
+    put('aliases', {id: uid(), a: g.name, b: it.name});
+    commit();
+    toast(`已設定「${g.name}」＝「${it.name}」`);
+    openRecipe(id);
+  });
+  const all = body.querySelector('#r-shop-all');
+  if (all) all.onclick = () => {
+    let n = 0;
+    m.miss.forEach(g => { if (addShop(g.name)) n++; });
+    persist(); markDirty(); renderShop(); renderBadges();
+    toast(n ? `已加入 ${n} 項` : '都已經在購物清單裡');
+  };
+  body.querySelector('#r-edit').onclick = () => openRecipeEdit(r);
+  body.querySelector('#r-del').onclick = () => {
+    if (!confirm(`確定刪除食譜「${r.name}」？`)) return;
+    remove('recipes', r.id); closeSheet(); commit(); toast('已刪除');
+  };
+  body.querySelector('#r-cooked').onclick = () => openCooked(r.id);
+}
+
+function openCooked(id) {
+  const r = S.recipes.find(x => x.id === id);
+  const m = matchIngs(r.ings);
+  const seen = new Set(), rows = [];
+  m.have.forEach(({item}) => { if (!seen.has(item.id)) { seen.add(item.id); rows.push(item); } });
+  if (!rows.length) { toast('這道菜沒有用到庫存裡的食材'); return; }
+  const body = openSheet('做完「' + r.name + '」', `
+    <p class="hint">選擇用過的食材現在的狀態，沒改的維持原狀。</p>
+    ${rows.map(it => `<div class="field"><label>${esc(it.name)}${it.qty ? '（' + esc(it.qty) + '）' : ''}</label><div class="seg" data-cid="${esc(it.id)}"><button type="button" data-v="" class="on">不變</button><button type="button" data-v="快用完">快用完</button><button type="button" data-v="用完">用完</button></div></div>`).join('')}
+    <button class="btn primary block" type="button" id="c-save">更新庫存</button>`);
+  body.querySelectorAll('.seg').forEach(s => bindSeg(s, () => {}));
+  body.querySelector('#c-save').onclick = () => {
+    const used = [];
+    body.querySelectorAll('[data-cid]').forEach(s => {
+      const v = segVal(s);
+      if (!v) return;
+      const it = S.items.find(x => x.id === s.dataset.cid);
+      if (!it) return;
+      put('items', {...it, status: v});
+      if (v === '用完') used.push(it);
+    });
+    closeSheet();
+    if (used.length && confirm(`要把用完的 ${used.map(i => i.name).join('、')} 加入購物清單嗎？`)) used.forEach(i => addShop(i.name, i.cat));
+    commit();
+    toast('庫存已更新');
+  };
+}
+
+/* ---------- 食譜編輯 ---------- */
+function openRecipeEdit(src, isNewOverride) {
+  const exists = src && S.recipes.some(x => x.id === src.id && !x.deleted);
+  const isNew = isNewOverride || !exists;
+  const d = src ? JSON.parse(JSON.stringify(src)) : {id: uid(), name: '', type: '主菜', ings: [], steps: '', url: ''};
+  if (!d.ings.length) d.ings.push({name: '', amt: '', optional: false});
+  const body = openSheet(isNew ? '新增食譜' : '編輯食譜', `
+    <div class="field"><label for="e-name">名稱</label><input id="e-name" value="${esc(d.name)}" autocomplete="off"></div>
+    <div class="field"><label for="e-type">類型</label><select id="e-type">${TYPES.map(t => `<option${t === d.type ? ' selected' : ''}>${t}</option>`).join('')}</select></div>
+    <div class="field"><label for="e-url">來源連結（選填）</label><input id="e-url" type="url" value="${esc(d.url)}" autocomplete="off"></div>
+    <div class="field"><label>食材</label><div id="e-ings"></div><button class="btn block" type="button" id="e-add" style="margin-top:8px">新增一列</button></div>
+    <div class="field"><label for="e-steps">做法（每個步驟用句號或換行分開）</label><textarea id="e-steps">${esc(d.steps)}</textarea></div>
+    <button class="btn primary block" type="button" id="e-save">儲存食譜</button>`);
+  const box = body.querySelector('#e-ings');
+  const collect = () => [...box.querySelectorAll('.ing-row')].map(row => ({
+    name: row.querySelector('.i-name').value.trim(), amt: row.querySelector('.i-amt').value.trim(), optional: row.querySelector('.i-opt').checked
+  }));
+  const draw = ings => {
+    box.innerHTML = ings.map((g, i) => `<div class="ing-row"><input class="i-name" list="dict-list" placeholder="食材" value="${esc(g.name)}" autocomplete="off"><input class="i-amt" placeholder="用量" value="${esc(g.amt)}" autocomplete="off"><button class="icon-btn" type="button" data-del="${i}" aria-label="刪除這列">×</button><label class="opt"><input type="checkbox" class="i-opt"${g.optional ? ' checked' : ''}>可省略</label></div>`).join('');
+  };
+  draw(d.ings);
+  box.addEventListener('click', e => {
+    const b = e.target.closest('[data-del]');
+    if (!b) return;
+    const ings = collect(); ings.splice(+b.dataset.del, 1);
+    draw(ings.length ? ings : [{name: '', amt: '', optional: false}]);
+  });
+  body.querySelector('#e-add').onclick = () => {
+    const ings = collect(); ings.push({name: '', amt: '', optional: false}); draw(ings);
+    const last = box.querySelectorAll('.i-name'); last[last.length - 1].focus();
+  };
+  body.querySelector('#e-save').onclick = () => {
+    const name = body.querySelector('#e-name').value.trim();
+    if (!name) { toast('請填寫食譜名稱'); return; }
+    const ings = collect().filter(g => g.name);
+    if (!ings.length) { toast('至少要有一樣食材'); return; }
+    const obj = {id: d.id, name, type: body.querySelector('#e-type').value, ings, steps: body.querySelector('#e-steps').value.trim(), url: body.querySelector('#e-url').value.trim(), builtin: !!d.builtin};
+    put('recipes', obj);
+    commit();
+    toast('食譜已儲存');
+    openRecipe(obj.id);
+  };
+}
+
+/* ---------- 用食材找 ---------- */
+const findSel = new Set();
+function renderFind() {
+  const ix = index(), seen = new Map();
+  live(S.items).filter(i => i.status !== '用完').forEach(i => {
+    const k = ix.canon(i.name);
+    if (!seen.has(k)) seen.set(k, i);
+  });
+  [...findSel].forEach(k => { if (!seen.has(k)) findSel.delete(k); });
+  const catOrder = Object.fromEntries(CATS.map((c, i) => [c.k, i]));
+  const opts = [...seen.entries()].sort((a, b) => (catOrder[a[1].cat] - catOrder[b[1].cat]) || a[1].name.localeCompare(b[1].name, 'zh-Hant'));
+  $('#find-chips').innerHTML = opts.length ? opts.map(([k, i]) => `<button class="chip${findSel.has(k) ? ' on' : ''}" type="button" data-k="${esc(k)}">${esc(i.name)}</button>`).join('') : '<p class="hint">庫存裡還沒有食材。</p>';
+  if (!findSel.size) { $('#find-list').innerHTML = '<div class="empty">先勾選至少一樣食材</div>'; return; }
+  const only = $('#find-only').checked;
+  const list = live(S.recipes).filter(r => {
+    const ks = new Set((r.ings || []).map(g => ix.canon(g.name)));
+    return [...findSel].every(k => ks.has(k));
+  }).map(r => ({r, m: matchIngs(r.ings)})).filter(x => !only || x.m.missCount === 0)
+    .sort((a, b) => a.m.missCount - b.m.missCount || a.r.name.localeCompare(b.r.name, 'zh-Hant'));
+  $('#find-list').innerHTML = list.length ? list.map(x => recipeCard(x.r, x.m)).join('') : '<div class="empty">沒有同時用到這些食材的食譜</div>';
+}
+$('#find-chips').addEventListener('click', e => {
+  const b = e.target.closest('[data-k]');
+  if (!b) return;
+  const k = b.dataset.k;
+  if (findSel.has(k)) findSel.delete(k); else findSel.add(k);
+  renderFind();
+});
+$('#find-only').addEventListener('change', renderFind);
+
+/* ---------- 貼上食譜 ---------- */
+const UNIT = '(?:大匙|小匙|茶匙|湯匙|匙|小把|把|杯|公克|克|kg|g|公斤|毫升|ml|cc|顆|個|根|片|條|塊|瓣|支|隻|包|罐|碗|朵|株|斤|兩|張|粒|份|人份|尾|盒|袋|段|tbsp|tsp|T|t)';
+const NUM = '[0-9０-９.．/／~～\\-一二三四五六七八九十半兩幾]+';
+const RE_END = new RegExp('[\\s:：]*((?:約|大約)?\\s*' + NUM + '\\s*' + UNIT + '?(?:\\s*[~～\\-]\\s*' + NUM + '\\s*' + UNIT + '?)?|適量|少許|少量|一點點|一點|些許|一小撮|一撮|酌量)$', 'i');
+const RE_START = new RegExp('^((?:約|大約)?' + NUM + '\\s*' + UNIT + ')\\s*(.+)$', 'i');
+const RE_HEAD = /^[【\[「(（]?\s*(材料|食材|調味料|調料|醃料|醬汁|醬料|配料|主料|副料|備料|淋醬|ingredients?)\s*[】\]」)）]?\s*[:：]?\s*/i;
+const RE_STOP = /^[【\[「(（]?\s*(做法|作法|步驟|料理步驟|烹調方式|料理方式|how to)/i;
+const RE_EMOJI = /[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\u{FE0F}\u{200D}\u{20E3}]/gu;
+
+function parseIngredients(text) {
+  const rows = [];
+  const lines = String(text || '').replace(RE_EMOJI, ' ').split(/\r?\n/);
+  for (let raw of lines) {
+    let line = raw.trim();
+    if (!line) continue;
+    if (RE_STOP.test(line)) { if (rows.length) break; else continue; }
+    if (/https?:\/\//i.test(line) || /^#/.test(line)) continue;
+    line = line.replace(RE_HEAD, '');
+    if (!line) continue;
+    const parts = line.split(/[、，,；;]|\s{2,}|\t/);
+    for (let p of parts) {
+      p = p.trim()
+        .replace(/^[\-–—•·*●○◆◇▪▫■□・‧>»→★☆✓✔♦|]+\s*/, '')
+        .replace(/^[(（]?\d+[.、)）]\s*/, '')
+        .trim();
+      if (!p) continue;
+      let name = p, amt = '';
+      const mEnd = RE_END.exec(p);
+      if (mEnd && mEnd.index > 0) { amt = mEnd[1].trim(); name = p.slice(0, mEnd.index); }
+      else {
+        const mStart = RE_START.exec(p);
+        if (mStart) { amt = mStart[1].trim(); name = mStart[2]; }
+      }
+      name = name.replace(/[(（][^)）]*[)）]/g, '').replace(/[:：\s]+$/, '').replace(/^[:：\s]+/, '').trim();
+      if (!name) continue;
+      rows.push({use: name.length <= 12, name, amt});
+    }
+  }
+  return rows;
+}
+
+let pasteRows = [];
+function renderPasteRows() {
+  if (!pasteRows.length) { $('#paste-rows').innerHTML = ''; $('#paste-result').innerHTML = ''; return; }
+  $('#paste-rows').innerHTML = `<h3>拆解結果（取消勾選不是食材的行）</h3>` + pasteRows.map((r, i) =>
+    `<div class="prow${r.use ? '' : ' off'}" data-pi="${i}"><input type="checkbox" class="p-use"${r.use ? ' checked' : ''} aria-label="使用"><input type="text" class="p-name" value="${esc(r.name)}" list="dict-list"><input type="text" class="p-amt" value="${esc(r.amt)}" placeholder="用量"></div>`).join('') +
+    `<div class="row-btns"><button class="btn" type="button" id="p-addrow">新增一列</button><button class="btn primary" type="button" id="p-compare">比對庫存</button></div>`;
+  renderPasteResult();
+}
+$('#paste-rows').addEventListener('input', e => {
+  const row = e.target.closest('[data-pi]');
+  if (!row) return;
+  const r = pasteRows[+row.dataset.pi];
+  if (e.target.classList.contains('p-name')) r.name = e.target.value;
+  if (e.target.classList.contains('p-amt')) r.amt = e.target.value;
+});
+$('#paste-rows').addEventListener('change', e => {
+  if (!e.target.classList.contains('p-use')) return;
+  const row = e.target.closest('[data-pi]');
+  pasteRows[+row.dataset.pi].use = e.target.checked;
+  row.classList.toggle('off', !e.target.checked);
+});
+$('#paste-rows').addEventListener('click', e => {
+  if (e.target.id === 'p-compare') renderPasteResult();
+  if (e.target.id === 'p-addrow') { pasteRows.push({use: true, name: '', amt: ''}); renderPasteRows(); }
+});
+function pasteIngs() { return pasteRows.filter(r => r.use && r.name.trim()).map(r => ({name: r.name.trim(), amt: r.amt.trim(), optional: false})); }
+function renderPasteResult() {
+  const ings = pasteIngs();
+  if (!ings.length) { $('#paste-result').innerHTML = ''; return; }
+  const m = matchIngs(ings);
+  $('#paste-result').innerHTML = `<div class="card">
+    <h3 style="margin-top:0">家裡有（${m.have.length}）</h3>
+    <p>${m.have.length ? m.have.map(({g, item}) => esc(g.name) + (item.status === '快用完' ? '（快用完）' : '')).join('、') : '沒有'}</p>
+    <h3>還缺（${m.miss.length}）</h3>
+    <p>${m.miss.length ? m.miss.map(g => esc(g.name)).join('、') : '都有了'}</p>
+    <div class="row-btns">${m.miss.length ? '<button class="btn" type="button" id="p-shop">缺少的加入購物清單</button>' : ''}<button class="btn primary" type="button" id="p-save">存成食譜</button></div></div>`;
+  const shopBtn = $('#p-shop');
+  if (shopBtn) shopBtn.onclick = () => {
+    let n = 0;
+    m.miss.forEach(g => { if (addShop(g.name)) n++; });
+    persist(); markDirty(); renderShop(); renderBadges();
+    toast(n ? `已加入 ${n} 項` : '都已經在購物清單裡');
+  };
+  $('#p-save').onclick = () => openRecipeEdit({
+    id: uid(), name: $('#paste-name').value.trim(), type: '主菜', ings: pasteIngs(), steps: '', url: $('#paste-url').value.trim()
+  }, true);
+}
+$('#paste-parse').onclick = () => {
+  pasteRows = parseIngredients($('#paste-text').value);
+  if (!pasteRows.length) toast('沒有找到材料，請確認貼上的內容');
+  renderPasteRows();
+};
+function setPasteStatus(msg) { $('#paste-status').textContent = msg; }
+function appendPasteText(t) {
+  const ta = $('#paste-text');
+  ta.value = (ta.value.trim() ? ta.value.trim() + '\n' : '') + t.trim();
+}
+
+$('#paste-fetch').onclick = async () => {
+  const url = $('#paste-url').value.trim();
+  if (!/^https?:\/\//i.test(url)) { toast('請先填寫來源連結'); return; }
+  if (!syncUrl) { toast('需要先在設定頁設定雲端同步'); return; }
+  const btn = $('#paste-fetch');
+  btn.disabled = true;
+  setPasteStatus('讀取中…');
+  try {
+    const res = await fetch(syncUrl + (syncUrl.includes('?') ? '&' : '?') + 'action=fetch&url=' + encodeURIComponent(url), {cache: 'no-store'});
+    const j = await res.json();
+    if (!j.ok) throw new Error(j.error || '讀取失敗');
+    if (j.name && !$('#paste-name').value.trim()) $('#paste-name').value = j.name;
+    appendPasteText(j.ingredients ? j.ingredients.join('\n') : (j.text || ''));
+    pasteRows = parseIngredients($('#paste-text').value);
+    renderPasteRows();
+    setPasteStatus(j.source === 'structured' ? '已讀取網頁的食材清單，請確認下方內容。' : '這個網頁沒有結構化的食材清單，已讀取網頁摘要，請刪掉不是食材的行。');
+  } catch (e) {
+    const ig = /instagram\.com/i.test(url);
+    setPasteStatus(`讀取失敗（${e.message}）。${ig ? 'IG 貼文通常需要登入才看得到內容。' : ''}請用手機瀏覽器開啟原網頁，複製材料後貼到下方，或截圖後按「上傳截圖」。`);
+  } finally {
+    btn.disabled = false;
+  }
+};
+
+/* ---------- 截圖辨識 ---------- */
+let tessLoading = null;
+function loadTesseract() {
+  if (window.Tesseract) return Promise.resolve();
+  if (tessLoading) return tessLoading;
+  tessLoading = new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = 'https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js';
+    s.onload = resolve;
+    s.onerror = () => { tessLoading = null; reject(new Error('無法載入辨識程式')); };
+    document.head.appendChild(s);
+  });
+  return tessLoading;
+}
+function cleanOcr(t) {
+  return String(t || '')
+    .replace(/([\u3400-\u9fff\uff00-\uffef])[ \t]+(?=[\u3400-\u9fff\uff00-\uffef])/g, '$1')
+    .replace(/[ \t]+(?=[\u3400-\u9fff])/g, ' ')
+    .split('\n').map(l => l.trim()).filter(Boolean).join('\n');
+}
+$('#paste-ocr-btn').onclick = () => $('#paste-ocr').click();
+$('#paste-ocr').onchange = async e => {
+  const files = [...e.target.files];
+  e.target.value = '';
+  if (!files.length) return;
+  const btn = $('#paste-ocr-btn');
+  btn.disabled = true;
+  let worker = null;
+  try {
+    setPasteStatus('載入辨識程式…');
+    await loadTesseract();
+    let cur = 0;
+    worker = await Tesseract.createWorker(['chi_tra', 'eng'], 1, {
+      logger: m => {
+        if (m.status === 'recognizing text') setPasteStatus(`辨識第 ${cur + 1}/${files.length} 張：${Math.round((m.progress || 0) * 100)}%`);
+        else if (/loading|initializ/.test(m.status || '')) setPasteStatus('下載語言資料（第一次使用比較久）…');
+      }
+    });
+    const texts = [];
+    for (cur = 0; cur < files.length; cur++) {
+      const {data} = await worker.recognize(files[cur]);
+      texts.push(cleanOcr(data.text));
+    }
+    const all = texts.filter(Boolean).join('\n');
+    if (!all) { setPasteStatus('沒有辨識出文字。可以試著只截材料那一塊，或改用手機內建的文字辨識。'); return; }
+    appendPasteText(all);
+    pasteRows = parseIngredients($('#paste-text').value);
+    renderPasteRows();
+    setPasteStatus('辨識完成。辨識結果可能有錯字，請檢查材料文字和下方的拆解結果。');
+  } catch (err) {
+    setPasteStatus(`辨識失敗（${err.message || err}）。請確認網路連線，或改用手機內建的文字辨識（iPhone 原況文字、Android Google 智慧鏡頭）複製後貼上。`);
+  } finally {
+    if (worker) { try { await worker.terminate(); } catch (e) {} }
+    btn.disabled = false;
+  }
+};
+
+/* ---------- 盲盒 ---------- */
+let boxMiss = '0', boxCur = null, boxBusy = false;
+const boxTypes = new Set();
+function renderBoxTypes() {
+  $('#box-types').innerHTML = TYPES.map(t => `<button class="chip${boxTypes.has(t) ? ' on' : ''}" type="button" data-t="${t}">${t}</button>`).join('');
+}
+$('#box-types').addEventListener('click', e => {
+  const b = e.target.closest('[data-t]');
+  if (!b) return;
+  if (boxTypes.has(b.dataset.t)) boxTypes.delete(b.dataset.t); else boxTypes.add(b.dataset.t);
+  renderBoxTypes();
+});
+bindSeg($('#box-miss'), v => { boxMiss = v; });
+function boxPool() {
+  return live(S.recipes).filter(r => !boxTypes.size || boxTypes.has(r.type))
+    .map(r => ({r, m: matchIngs(r.ings)}))
+    .filter(x => boxMiss === 'all' || x.m.missCount <= +boxMiss);
+}
+function draw() {
+  if (boxBusy) return;
+  const pool = boxPool();
+  if (!pool.length) {
+    toast(boxMiss === 'all' ? '沒有符合類型的食譜' : '沒有符合條件的食譜，試試放寬「最多缺幾樣」');
+    return;
+  }
+  let cand = pool;
+  if (pool.length >= 6) cand = pool.filter(x => !META.recent.includes(x.r.id));
+  else if (pool.length > 1) cand = pool.filter(x => x.r.id !== META.recent[0]);
+  if (!cand.length) cand = pool;
+  const pick = cand[Math.floor(Math.random() * cand.length)];
+  META.recent = [pick.r.id, ...META.recent.filter(id => id !== pick.r.id)].slice(0, 5);
+  lsSet(LS_META, JSON.stringify(META));
+  boxCur = pick.r.id;
+  boxBusy = true;
+  const card = $('#box-card');
+  const wasFlipped = card.classList.contains('flipped');
+  card.classList.remove('flipped');
+  setTimeout(() => {
+    card.classList.add('shake');
+    setTimeout(() => {
+      card.classList.remove('shake');
+      const missNames = pick.m.miss.filter(g => !g.optional).map(g => g.name);
+      $('#box-back').innerHTML = `<div class="sub">${esc(pick.r.type)}</div><div class="bn">${esc(pick.r.name)}</div>` +
+        (missNames.length ? `<div class="pill warn">缺 ${missNames.length} 樣：${esc(missNames.join('、'))}</div>` : '<div class="pill ok">食材齊全</div>');
+      card.classList.add('flipped');
+      $('#box-draw').hidden = true;
+      $('#box-after').hidden = false;
+      setTimeout(() => { boxBusy = false; }, 550);
+    }, 350);
+  }, wasFlipped ? 560 : 0);
+}
+$('#box-draw').onclick = draw;
+$('#box-again').onclick = draw;
+$('#box-go').onclick = () => { if (boxCur) openRecipe(boxCur); };
+$('#box-card').onclick = () => { if (boxCur && $('#box-card').classList.contains('flipped')) openRecipe(boxCur); };
+
+/* ---------- 購物清單 ---------- */
+function addShop(name, cat) {
+  name = String(name || '').trim();
+  if (!name) return false;
+  const ix = index(), k = ix.canon(name);
+  if (live(S.shop).some(s => !s.bought && ix.canon(s.name) === k)) return false;
+  put('shop', {id: uid(), name, cat: cat || guessCat(name), bought: false});
+  return true;
+}
+function renderShop() {
+  const list = live(S.shop).sort((a, b) => Number(!!a.bought) - Number(!!b.bought));
+  $('#shop-list').innerHTML = list.length ? list.map(s => `<div class="check-row${s.bought ? ' done' : ''}" data-sid="${esc(s.id)}"><input type="checkbox" class="s-bought"${s.bought ? ' checked' : ''} aria-label="已買"><div class="main"><div class="nm">${esc(s.name)}</div><div class="sub">${esc(CATN[s.cat] || '')}</div></div><button class="icon-btn s-del" type="button" aria-label="刪除">×</button></div>`).join('')
+    : '<div class="empty">購物清單是空的</div>';
+}
+$('#shop-add').onclick = () => {
+  const n = $('#shop-in').value.trim();
+  if (!n) return;
+  if (addShop(n)) { $('#shop-in').value = ''; commit(); } else toast('已經在購物清單裡');
+};
+$('#shop-in').addEventListener('keydown', e => { if (e.key === 'Enter') $('#shop-add').click(); });
+$('#shop-list').addEventListener('click', e => {
+  const row = e.target.closest('[data-sid]');
+  if (!row) return;
+  const s = S.shop.find(x => x.id === row.dataset.sid);
+  if (!s) return;
+  if (e.target.classList.contains('s-del')) { remove('shop', s.id); commit(); return; }
+  if (e.target.classList.contains('s-bought') || e.target.closest('.main')) {
+    put('shop', {...s, bought: !s.bought});
+    commit();
+  }
+});
+$('#shop-clear').onclick = () => {
+  const b = live(S.shop).filter(s => s.bought);
+  if (!b.length) { toast('沒有已買的項目'); return; }
+  if (!confirm(`刪除 ${b.length} 個已買的項目？`)) return;
+  b.forEach(s => remove('shop', s.id));
+  commit();
+};
+$('#shop-stock').onclick = () => {
+  const b = live(S.shop).filter(s => s.bought);
+  if (!b.length) { toast('先勾選已經買到的項目'); return; }
+  const body = openSheet('放進庫存', `<p class="hint">確認每樣東西的分類。庫存裡已經有的，狀態會改回「有」。</p>
+    ${b.map(s => `<div class="check-row" data-sid="${esc(s.id)}"><div class="main"><div class="nm">${esc(s.name)}</div></div><select>${catOptions(s.cat)}</select></div>`).join('')}
+    <button class="btn primary block" type="button" id="st-save" style="margin-top:12px">放進庫存</button>`);
+  body.querySelector('#st-save').onclick = () => {
+    const ix = index();
+    body.querySelectorAll('[data-sid]').forEach(row => {
+      const s = S.shop.find(x => x.id === row.dataset.sid);
+      if (!s) return;
+      const cat = row.querySelector('select').value;
+      const exist = (ix.all.get(ix.canon(s.name)) || [])[0];
+      if (exist) put('items', {...exist, status: '有'});
+      else put('items', {id: uid(), name: s.name, cat, qty: '', status: '有', exp: '', note: ''});
+      remove('shop', s.id);
+    });
+    closeSheet(); commit(); toast('已放進庫存');
+  };
+};
+
+/* ---------- 雲端同步 ---------- */
+let syncUrl = lsGet(LS_SYNC) || '';
+let syncState = 'local', pushTimer = null, syncing = false, pushAgain = false;
+function setSync(s) {
+  syncState = s;
+  const map = {local: ['', '只存在本機'], ok: ['ok', '已同步'], busy: ['busy', '同步中'], off: ['off', '離線，只存在本機']};
+  const [cls, txt] = map[s] || map.local;
+  $('#sync-dot').className = 'dot' + (cls ? ' ' + cls : '');
+  $('#sync-text').textContent = txt;
+}
+function apiUrl(params) { return syncUrl + (syncUrl.includes('?') ? '&' : '?') + params; }
+function markDirty() {
+  if (!syncUrl) return;
+  lsSet(LS_DIRTY, '1');
+  clearTimeout(pushTimer);
+  setSync('busy');
+  pushTimer = setTimeout(push, 2000);
+}
+async function pull() {
+  if (!syncUrl) return;
+  if (syncing) return;
+  setSync('busy');
+  try {
+    const res = await fetch(apiUrl('action=get'), {cache: 'no-store'});
+    const j = await res.json();
+    if (!j.ok) throw new Error(j.error || '讀取失敗');
+    S = mergeData(S, j.data || {});
+    seedBuiltins();
+    persist();
+    renderAll();
+    if (lsGet(LS_DIRTY)) push(); else setSync('ok');
+  } catch (e) {
+    setSync('off');
+  }
+}
+async function push() {
+  pushTimer = null;
+  if (!syncUrl) return;
+  if (syncing) { pushAgain = true; return; }
+  syncing = true;
+  setSync('busy');
+  try {
+    const res = await fetch(syncUrl, {method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: JSON.stringify({action: 'put', data: S})});
+    const j = await res.json();
+    if (!j.ok) throw new Error(j.error || '寫入失敗');
+    S = mergeData(S, j.data || {});
+    seedBuiltins();
+    persist();
+    if (!pushAgain && !pushTimer) lsDel(LS_DIRTY);
+    renderAll();
+    setSync('ok');
+  } catch (e) {
+    setSync('off');
+  } finally {
+    syncing = false;
+    if (pushAgain) { pushAgain = false; push(); }
+  }
+}
+async function testSync(url) {
+  if (/\/dev(\?|$)/.test(url)) throw new Error('這是結尾為 /dev 的測試網址，只有你本人登入時能用。請改用「部署」後網址結尾是 /exec 的那一個。');
+  let res, text;
+  try {
+    res = await fetch(url + (url.includes('?') ? '&' : '?') + 'action=get', {cache: 'no-store'});
+    text = await res.text();
+  } catch (e) {
+    throw new Error('瀏覽器拿不到回應。常見原因：存取權不是「所有人」、改設定後網址換了但沒貼新網址，或部署時沒有完成授權。');
+  }
+  let j;
+  try { j = JSON.parse(text); } catch (e) {
+    if (/找不到指令碼函式|Script function not found/i.test(text)) throw new Error('找不到 doGet。程式碼可能沒有儲存，或修改後沒有部署新版本。');
+    throw new Error('回應不是資料格式（HTTP ' + res.status + '），通常是部署還沒授權或需要登入。');
+  }
+  if (!j.ok) throw new Error('Apps Script 回報錯誤：' + (j.error || '未知'));
+  return true;
+}
+function renderSettings() {
+  const inp = $('#sync-url');
+  if (document.activeElement !== inp) inp.value = syncUrl;
+  $('#sync-desc').textContent = syncUrl ? '已設定雲端同步。每次修改後約 2 秒會寫入雲端，打開網頁時會讀取最新資料。' : '目前資料只存在這支手機的瀏覽器裡。設定後，全家可以共用同一份資料。';
+  $('#share-box').hidden = !syncUrl;
+  $('#share-link').value = syncUrl ? location.origin + location.pathname + '#sync=' + encodeURIComponent(syncUrl) : '';
+  $('#paste-fetch').hidden = !syncUrl;
+  $('#sync-now').disabled = !syncUrl;
+  $('#sync-off').disabled = !syncUrl;
+  const al = live(S.aliases).sort((a, b) => a.a.localeCompare(b.a, 'zh-Hant'));
+  $('#alias-list').innerHTML = al.map(a => `<div class="alias"><span>${esc(a.a)} ＝ ${esc(a.b)}</span><button class="icon-btn" type="button" data-aid="${esc(a.id)}" aria-label="刪除別名">×</button></div>`).join('');
+}
+$('#sync-save').onclick = async () => {
+  const url = $('#sync-url').value.trim();
+  if (!/^https:\/\/script\.google(usercontent)?\.com\//.test(url)) { toast('請貼上 Apps Script 部署後的網址'); return; }
+  const btn = $('#sync-save');
+  btn.disabled = true;
+  try {
+    await testSync(url);
+    syncUrl = url;
+    lsSet(LS_SYNC, url);
+    toast('連線成功');
+    renderSettings();
+    lsSet(LS_DIRTY, '1');
+    await pull();
+  } catch (e) {
+    $('#sync-desc').textContent = '連線失敗：' + e.message;
+    toast('連線失敗，原因寫在「雲端同步」標題下方');
+  } finally {
+    btn.disabled = false;
+  }
+};
+$('#sync-now').onclick = () => { lsSet(LS_DIRTY, '1'); pull(); };
+$('#sync-off').onclick = () => {
+  if (!confirm('停用後，資料只存在這支手機，不會再和家人同步。確定停用？')) return;
+  syncUrl = ''; lsDel(LS_SYNC); lsDel(LS_DIRTY); setSync('local'); renderSettings();
+};
+$('#share-copy').onclick = () => copyText($('#share-link').value);
+$('#gas-code').textContent = $('#gas-src').textContent.trim();
+$('#gas-copy').onclick = () => copyText($('#gas-src').textContent.trim());
+$('#alias-add').onclick = () => {
+  const a = $('#alias-a').value.trim(), b = $('#alias-b').value.trim();
+  if (!a || !b) { toast('兩個名稱都要填'); return; }
+  if (norm(a) === norm(b)) { toast('兩個名稱相同'); return; }
+  put('aliases', {id: uid(), a, b});
+  $('#alias-a').value = ''; $('#alias-b').value = '';
+  commit(); toast('已新增別名');
+};
+$('#alias-list').addEventListener('click', e => {
+  const b = e.target.closest('[data-aid]');
+  if (!b) return;
+  remove('aliases', b.dataset.aid); commit();
+});
+
+/* ---------- 匯出匯入 ---------- */
+$('#export-btn').onclick = () => {
+  const d = new Date();
+  const name = `fridge-backup-${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}.json`;
+  const blob = new Blob([JSON.stringify(S, null, 1)], {type: 'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+};
+$('#import-btn').onclick = () => $('#import-file').click();
+$('#import-file').onchange = async e => {
+  const f = e.target.files[0];
+  e.target.value = '';
+  if (!f) return;
+  try {
+    const d = cleanData(JSON.parse(await f.text()));
+    const n = COLLS.reduce((s, k) => s + live(d[k]).length, 0);
+    if (!confirm(`檔案裡有 ${live(d.items).length} 樣食材、${live(d.recipes).length} 道食譜。匯入後會和目前的資料合併，同一筆資料保留較新的版本。確定匯入？`)) return;
+    if (!n) { toast('檔案裡沒有資料'); return; }
+    S = mergeData(S, d);
+    seedBuiltins();
+    commit();
+    toast('匯入完成');
+  } catch (err) {
+    toast('檔案格式不正確');
+  }
+};
+
+/* ---------- 共用渲染 ---------- */
+function updateDatalist() {
+  const names = new Set(Object.keys(DICT));
+  live(S.items).forEach(i => names.add(i.name));
+  $('#dict-list').innerHTML = [...names].map(n => `<option value="${esc(n)}">`).join('');
+}
+function renderBadges() {
+  const n = live(S.shop).filter(s => !s.bought).length;
+  $('#shop-badge').textContent = n ? String(n) : '';
+}
+function renderAll() {
+  renderInventory();
+  renderRecipeList();
+  renderFind();
+  renderShop();
+  renderSettings();
+  renderBadges();
+  updateDatalist();
+}
+
+/* ---------- 啟動 ---------- */
+load();
+(function initFromHash() {
+  const m = /^#sync=(.+)$/.exec(location.hash);
+  if (!m) return;
+  try {
+    const url = decodeURIComponent(m[1]);
+    if (/^https:\/\/script\.google(usercontent)?\.com\//.test(url)) {
+      syncUrl = url; lsSet(LS_SYNC, url);
+      setTimeout(() => toast('已設定雲端同步'), 300);
+    }
+  } catch (e) {}
+  history.replaceState(null, '', location.pathname + location.search);
+})();
+renderBoxTypes();
+renderAll();
+showTab(['inv', 'rec', 'box', 'shop', 'set'].includes(lsGet(LS_TAB)) ? lsGet(LS_TAB) : 'inv');
+setSync(syncUrl ? 'busy' : 'local');
+if (syncUrl) pull();
+window.addEventListener('online', () => { if (syncUrl) { if (lsGet(LS_DIRTY)) push(); else pull(); } });
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && syncUrl && !syncing) pull(); });
+</script>
+</body>
+</html>
